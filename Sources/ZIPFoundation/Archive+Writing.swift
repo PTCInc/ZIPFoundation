@@ -159,9 +159,10 @@ extension Archive {
             // End of Central Directory Record (including ZIP64 End of Central Directory Record/Locator)
             let startOfEOCD = Int64(ftello(self.archiveFile))
             guard startOfEOCD >= 0 else { throw ArchiveError.unwritableArchive }
-            let eocd = try self.writeEndOfCentralDirectory(centralDirectoryStructure: centralDir,
-                                                           startOfCentralDirectory: UInt64(startOfCD),
-                                                           startOfEndOfCentralDirectory: UInt64(startOfEOCD), operation: .add)
+            let eocd = try
+                self.writeEndOfCentralDirectory(centralDirectoryStructure: centralDir,
+                                                startOfCentralDirectory: UInt64(startOfCD),
+                                                startOfEndOfCentralDirectory: UInt64(startOfEOCD), operation: .add)
             (self.endOfCentralDirectoryRecord, self.zip64EndOfCentralDirectory) = eocd
         } catch ArchiveError.cancelledOperation {
             try rollback(UInt64(fileHeaderStart), (existingData, existingSize), bufferSize, eocdRecord, zip64EOCD)
