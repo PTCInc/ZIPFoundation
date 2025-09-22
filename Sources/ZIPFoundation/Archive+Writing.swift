@@ -130,6 +130,7 @@ extension Archive {
         fseeko(self.archiveFile, off_t(startOfCD), SEEK_SET)
         let fileHeaderStart = Int64(ftello(self.archiveFile))
         guard fileHeaderStart >= 0 else { throw ArchiveError.unwritableArchive }
+
         let modDateTime = modificationDate.fileModificationDateTime
         defer { fflush(self.archiveFile) }
         do {
@@ -143,6 +144,7 @@ extension Archive {
                                                           progress: progress, provider: provider)
             startOfCD = Int64(ftello(self.archiveFile))
             guard startOfCD >= 0 else { throw ArchiveError.unwritableArchive }
+
             // Write the local file header a second time. Now with compressedSize (if applicable) and a valid checksum.
             fseeko(self.archiveFile, off_t(fileHeaderStart), SEEK_SET)
             localFileHeader = try self.writeLocalFileHeader(path: path, compressionMethod: compressionMethod,
@@ -159,6 +161,7 @@ extension Archive {
             // End of Central Directory Record (including ZIP64 End of Central Directory Record/Locator)
             let startOfEOCD = Int64(ftello(self.archiveFile))
             guard startOfEOCD >= 0 else { throw ArchiveError.unwritableArchive }
+
             let eocd = try
                 self.writeEndOfCentralDirectory(centralDirectoryStructure: centralDir,
                                                 startOfCentralDirectory: UInt64(startOfCD),
@@ -207,9 +210,11 @@ extension Archive {
         }
         let startOfCentralDirectory = Int64(ftello(tempArchive.archiveFile))
         guard startOfCentralDirectory >= 0 else { throw ArchiveError.unwritableArchive }
+
         _ = try Data.write(chunk: centralDirectoryData, to: tempArchive.archiveFile)
         let startOfEndOfCentralDirectory = Int64(ftello(tempArchive.archiveFile))
         guard startOfEndOfCentralDirectory >= 0 else { throw ArchiveError.unwritableArchive }
+
         tempArchive.endOfCentralDirectoryRecord = self.endOfCentralDirectoryRecord
         tempArchive.zip64EndOfCentralDirectory = self.zip64EndOfCentralDirectory
         let ecodStructure = try
