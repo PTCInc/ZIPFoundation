@@ -262,8 +262,19 @@ extension ZIPFoundationTests {
             "META-INF/": .directory,
             "META-INF/container.xml": .file
         ]
-        for entry in archive {
-            XCTAssertEqual(entry.type, expectedData[entry.path])
+
+        // Collect all entries first to debug on Linux
+        let entries = Array(archive)
+        XCTAssertEqual(entries.count, 2, "Expected 2 entries in archive, got \(entries.count)")
+
+        for entry in entries {
+            // Check if we have the expected path
+            guard let expectedType = expectedData[entry.path] else {
+                XCTFail("Unexpected path '\(entry.path)' in archive. Expected paths: \(expectedData.keys.sorted())")
+                continue
+            }
+
+            XCTAssertEqual(entry.type, expectedType, "Entry type mismatch for path '\(entry.path)'")
         }
     }
 
