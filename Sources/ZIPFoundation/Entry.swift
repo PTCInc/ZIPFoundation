@@ -115,11 +115,7 @@ public struct Entry: Equatable {
     /// - Parameters:
     ///   - encoding: `String.Encoding`
     public func path(using encoding: String.Encoding) -> String {
-        if encoding == .codepage437 {
-            return String(codepage437Data: self.centralDirectoryStructure.fileNameData)
-        } else {
-            return String(data: self.centralDirectoryStructure.fileNameData, encoding: encoding) ?? ""
-        }
+        return String(pathData: self.centralDirectoryStructure.fileNameData, encoding: encoding)
     }
     /// The `path` of the receiver within a ZIP `Archive`.
     public var path: String {
@@ -332,7 +328,21 @@ extension String.Encoding {
 }
 
 extension String {
-    
+
+    init(pathData: Data, encoding: String.Encoding) {
+        #if os(Linux)
+        if encoding == .codepage437 {
+            self.init()
+            for byte in pathData {
+                self.unicodeScalars.append(Self.cp437Lookup[Int(byte)])
+            }
+            return
+        }
+        #endif
+        self = String(data: pathData, encoding: encoding) ?? ""
+    }
+
+    #if os(Linux)
     // Source: https://en.wikipedia.org/wiki/Code_page_437#Character_set
     private static let cp437Lookup: Array<UnicodeScalar> = [
         0x0000, 0x263A, 0x263B, 0x2665, 0x2666, 0x2663, 0x2660, 0x2022, 0x25D8, 0x25CB, 0x25D9, 0x2642, 0x2640, 0x266A, 0x266B, 0x263C,
@@ -352,12 +362,6 @@ extension String {
         0x03B1, 0x00DF, 0x0393, 0x03C0, 0x03A3, 0x03C3, 0x00B5, 0x03C4, 0x03A6, 0x0398, 0x03A9, 0x03B4, 0x221E, 0x03C6, 0x03B5, 0x2229,
         0x2261, 0x00B1, 0x2265, 0x2264, 0x2329, 0x2321, 0x00F7, 0x2248, 0x00B0, 0x2219, 0x00B7, 0x221A, 0x207F, 0x00B2, 0x25A0, 0x00A0
     ].map { UnicodeScalar($0)! }
+    #endif
 
-    init(codepage437Data: Data) {
-        self.init()
-        for byte in codepage437Data {
-            self.unicodeScalars.append(Self.cp437Lookup[Int(byte)])
-        }
-    }
-    
 }
