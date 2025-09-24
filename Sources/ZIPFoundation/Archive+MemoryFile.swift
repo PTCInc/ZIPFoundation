@@ -27,15 +27,17 @@ extension Archive {
             self.data = data
         }
 
-        func open(mode: AccessMode) -> FILEPointer {
+        func open(mode: AccessMode) throws -> FILEPointer {
             let cookie = Unmanaged.passRetained(self)
             #if os(macOS) || os(iOS) || os(tvOS) || os(visionOS) || os(watchOS) || os(Android)
-            let result = mode.isWritable
-                ? funopen(cookie.toOpaque(), readStub, writeStub, seekStub, closeStub)!
-                : funopen(cookie.toOpaque(), readStub, nil, seekStub, closeStub)!
+            guard let result = mode.isWritable
+                ? funopen(cookie.toOpaque(), readStub, writeStub, seekStub, closeStub)
+                : funopen(cookie.toOpaque(), readStub, nil, seekStub, closeStub)
+            else { throw MemoryFileError.invalidMemoryFile }
             #else
             let stubs = cookie_io_functions_t(read: readStub, write: writeStub, seek: seekStub, close: closeStub)
-            let result = fopencookie(cookie.toOpaque(), mode.posixMode, stubs)!
+            guard let result = fopencookie(cookie.toOpaque(), mode.posixMode, stubs)
+            else { throw MemoryFileError.invalidMemoryFile }
             #endif
             return result
         }
@@ -43,6 +45,10 @@ extension Archive {
 
     /// Returns a `Data` object containing a representation of the receiver.
     public var data: Data? { return self.memoryFile?.data }
+}
+
+public enum MemoryFileError: Error {
+    case invalidMemoryFile
 }
 
 private extension Archive.MemoryFile {
