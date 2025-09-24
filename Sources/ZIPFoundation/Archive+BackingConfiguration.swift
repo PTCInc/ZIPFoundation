@@ -86,7 +86,7 @@ extension Archive {
     static func makeBackingConfiguration(for data: Data, mode: AccessMode) throws
     -> BackingConfiguration {
         let memoryFile = MemoryFile(data: data)
-        let archiveFile = memoryFile.open(mode: mode)
+        let archiveFile = try memoryFile.open(mode: mode)
         switch mode {
         case .read:
             guard let (eocdRecord, zip64EOCD) = Archive.scanForEndOfCentralDirectoryRecord(in: archiveFile) else {

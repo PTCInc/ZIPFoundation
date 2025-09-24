@@ -132,8 +132,8 @@ extension ZIPFoundationTests {
                             throws: Archive.ArchiveError.missingEndOfCentralDirectoryRecord)
     }
 
-    func testReadOnlyFile() {
-        let file = Archive.MemoryFile(data: Data("ABCDEabcde".utf8)).open(mode: .read)
+    func testReadOnlyFile() throws {
+        let file = try Archive.MemoryFile(data: Data("ABCDEabcde".utf8)).open(mode: .read)
         var chars: [UInt8] = [0, 0, 0]
         XCTAssertEqual(fread(&chars, 1, 2, file), 2)
         XCTAssertEqual(String(Unicode.Scalar(chars[0])), "A")
@@ -150,19 +150,19 @@ extension ZIPFoundationTests {
         XCTAssertEqual(fclose(file), 0)
     }
 
-    func testReadOnlySlicedFile() {
+    func testReadOnlySlicedFile() throws {
         let originalData = Data("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".utf8)
         let slice = originalData[10..<originalData.count]
-        let file = Archive.MemoryFile(data: slice).open(mode: .read)
+        let file = try Archive.MemoryFile(data: slice).open(mode: .read)
         var chars: [UInt8] = [0, 0, 0]
         XCTAssertEqual(fread(&chars, 1, 2, file), 2)
         XCTAssertEqual(String(Unicode.Scalar(chars[0])), "A")
         XCTAssertEqual(String(Unicode.Scalar(chars[1])), "B")
     }
 
-    func testWriteOnlyFile() {
+    func testWriteOnlyFile() throws {
         let mem = Archive.MemoryFile()
-        let file = mem.open(mode: .create)
+        let file = try mem.open(mode: .create)
         XCTAssertEqual(fwrite("01234", 1, 5, file), 5)
         XCTAssertEqual(fseek(file, -2, SEEK_END), 0)
         XCTAssertEqual(fwrite("5678", 1, 4, file), 4)
@@ -171,9 +171,9 @@ extension ZIPFoundationTests {
         XCTAssertEqual(mem.data, Data("01256789".utf8))
     }
 
-    func testReadWriteFile() {
+    func testReadWriteFile() throws {
         let mem = Archive.MemoryFile(data: Data("witch".utf8))
-        let file = mem.open(mode: .update)
+        let file = try mem.open(mode: .update)
         XCTAssertEqual(fseek(file, 1, SEEK_CUR), 0)
         XCTAssertEqual(fwrite("a", 1, 1, file), 1)
         XCTAssertEqual(fseek(file, 0, SEEK_END), 0)
