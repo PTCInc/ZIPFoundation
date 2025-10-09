@@ -253,7 +253,8 @@ extension ZIPFoundationTests {
             ("testZipItem", testZipItem),
             ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests),
             ("testFileModificationDate", testFileModificationDate),
-            ("testFileModificationDateHelperMethods", testFileModificationDateHelperMethods)
+            ("testFileModificationDateHelperMethods", testFileModificationDateHelperMethods),
+            ("testInvalidSymlinkCompressionMethodSymlinkErrorConditions", testInvalidSymlinkCompressionMethodErrorConditions)
         ] + zip64Tests + darwinOnlyTests + swift5OnlyTests
     }
 
@@ -289,7 +290,9 @@ extension ZIPFoundationTests {
             ("testWriteLargeChunk", testWriteLargeChunk),
             ("testExtractUncompressedZIP64Entries", testExtractUncompressedZIP64Entries),
             ("testExtractCompressedZIP64Entries", testExtractCompressedZIP64Entries),
-            ("testExtractEntryWithZIP64DataDescriptor", testExtractEntryWithZIP64DataDescriptor)
+            ("testExtractEntryWithZIP64DataDescriptor", testExtractEntryWithZIP64DataDescriptor),
+            ("testUnzipSymlink", testUnzipSymlink),
+            ("testUnzipCompressedSymlink", testUnzipCompressedSymlink)
         ]
     }
 

@@ -117,11 +117,15 @@ extension FileManager {
                 let entryProgress = archive.makeProgressForReading(entry)
                 progress.addChild(entryProgress, withPendingUnitCount: entryProgress.totalUnitCount)
                 crc32 = try archive.extract(entry, to: entryURL,
-                                            skipCRC32: skipCRC32, allowUncontainedSymlinks: allowUncontainedSymlinks,
+                                            skipCRC32: skipCRC32,
+                                            symlinksValidWithin: destinationURL,
+                                            allowUncontainedSymlinks: allowUncontainedSymlinks,
                                             progress: entryProgress)
             } else {
                 crc32 = try archive.extract(entry, to: entryURL,
-                                            skipCRC32: skipCRC32, allowUncontainedSymlinks: allowUncontainedSymlinks)
+                                            skipCRC32: skipCRC32,
+                                            symlinksValidWithin: destinationURL,
+                                            allowUncontainedSymlinks: allowUncontainedSymlinks)
             }
 
             func verifyChecksumIfNecessary() throws {
