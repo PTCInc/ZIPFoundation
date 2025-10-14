@@ -19,13 +19,12 @@ extension Archive {
     ///   - bufferSize: The maximum size of the read buffer and the decompression buffer (if needed).
     ///   - skipCRC32: Optional flag to skip calculation of the CRC32 checksum to improve performance.
     ///   - symlinksValidWithin: Symbolic links are valid within the url
-    ///   - allowUncontainedSymlinks: Optional flag to allow symlinks that point to paths outside the destination.
     ///   - progress: A progress object that can be used to track or cancel the extract operation.
     /// - Returns: The checksum of the processed content or 0 if the `skipCRC32` flag was set to `true`.
     /// - Throws: An error if the destination file cannot be written or the entry contains malformed content.
     public func extract(_ entry: Entry, to url: URL, bufferSize: Int = defaultReadChunkSize,
                         skipCRC32: Bool = false,
-                        symlinksValidWithin: URL? = nil, allowUncontainedSymlinks: Bool = false,
+                        symlinksValidWithin: URL? = nil,
                         progress: Progress? = nil) throws -> CRC32 {
         guard bufferSize > 0 else {
             throw ArchiveError.invalidBufferSize
@@ -62,7 +61,7 @@ extension Archive {
                 let parentURL = url.deletingLastPathComponent()
                 let isAbsolutePath = (linkPath as NSString).isAbsolutePath
                 let linkURL = URL(fileURLWithPath: linkPath, relativeTo: isAbsolutePath ? nil : parentURL)
-                let isContained = allowUncontainedSymlinks || linkURL.isContained(in: symlinksValidWithin ?? parentURL)
+                let isContained = linkURL.isContained(in: symlinksValidWithin ?? parentURL)
                 guard isContained else { throw ArchiveError.uncontainedSymlink }
 
                 try fileManager.createParentDirectoryStructure(for: url)

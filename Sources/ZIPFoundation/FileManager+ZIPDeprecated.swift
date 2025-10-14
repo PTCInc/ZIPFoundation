@@ -15,4 +15,18 @@ public extension FileManager {
         try self.unzipItem(at: sourceURL, to: destinationURL, skipCRC32: skipCRC32,
                            progress: progress, pathEncoding: preferredEncoding)
     }
+
+    @available(*, deprecated,
+                message: "Please use `symlinksValidWithin` for validate symlinks")
+    func unzipItem(at sourceURL: URL, to destinationURL: URL,
+                   skipCRC32: Bool = false, allowUncontainedSymlinks: Bool,
+                   progress: Progress? = nil, pathEncoding: String.Encoding? = nil) throws {
+        var symlinksValidWithin: URL?
+        if allowUncontainedSymlinks {
+            symlinksValidWithin = URL.rootFS
+        }
+        try self.unzipItem(at: sourceURL, to: destinationURL, skipCRC32: skipCRC32,
+                           symlinksValidWithin: symlinksValidWithin,
+                           progress: progress, pathEncoding: pathEncoding)
+    }
 }

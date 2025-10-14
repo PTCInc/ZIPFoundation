@@ -26,4 +26,15 @@ public extension Archive {
         try self.extract(entry, bufferSize: Int(bufferSize), skipCRC32: skipCRC32,
                          progress: progress, consumer: consumer)
     }
+
+    @available(*, deprecated,
+                message: "Please use `symlinksValidWithin` for validate symlinks")
+    func extract(_ entry: Entry, to url: URL, bufferSize: Int = defaultReadChunkSize,
+                 skipCRC32: Bool = false,
+                 symlinksValidWithin: URL? = nil, allowUncontainedSymlinks: Bool,
+                 progress: Progress? = nil) throws -> CRC32 {
+        let symlinksValidWithin = URL.rootFS
+        return try self.extract(entry, to: url, skipCRC32: skipCRC32,
+                                symlinksValidWithin: symlinksValidWithin, progress: progress)
+    }
 }

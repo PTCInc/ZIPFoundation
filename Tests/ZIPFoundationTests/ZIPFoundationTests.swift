@@ -254,7 +254,7 @@ extension ZIPFoundationTests {
             ("testLinuxTestSuiteIncludesAllTests", testLinuxTestSuiteIncludesAllTests),
             ("testFileModificationDate", testFileModificationDate),
             ("testFileModificationDateHelperMethods", testFileModificationDateHelperMethods),
-            ("testInvalidSymlinkCompressionMethodSymlinkErrorConditions", testInvalidSymlinkCompressionMethodErrorConditions)
+            ("testInvalidSymlinkCompressionMethodErrorConditions", testInvalidSymlinkCompressionMethodErrorConditions)
         ] + zip64Tests + darwinOnlyTests + swift5OnlyTests
     }
 
