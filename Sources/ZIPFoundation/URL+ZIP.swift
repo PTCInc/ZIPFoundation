@@ -24,4 +24,8 @@ extension URL {
         return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(
             ProcessInfo.processInfo.globallyUniqueString)
     }
+
+    static var rootFS: URL {
+        URL(fileURLWithPath: "/")
+    }
 }
