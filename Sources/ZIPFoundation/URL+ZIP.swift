@@ -25,7 +25,9 @@ extension URL {
             ProcessInfo.processInfo.globallyUniqueString)
     }
 
-    static var rootFS: URL {
+    /// A file URL representing the root of the local filesystem (`/`).
+    /// Can be used to indicate that symlinks may point anywhere on the filesystem during extraction.
+    public static var rootFS: URL {
         URL(fileURLWithPath: "/")
     }
 }
