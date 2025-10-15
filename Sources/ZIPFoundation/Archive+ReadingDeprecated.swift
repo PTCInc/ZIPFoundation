@@ -28,7 +28,7 @@ public extension Archive {
     }
 
     @available(*, deprecated,
-                message: "Please use `symlinksValidWithin` to restrict symlink creation.")
+                renamed: "Archive.extract(_:to:bufferSize:skipCRC32:symlinksValidWithin:progress:)")
     func extract(_ entry: Entry, to url: URL, bufferSize: Int = defaultReadChunkSize,
                  skipCRC32: Bool = false,
                  allowUncontainedSymlinks: Bool,

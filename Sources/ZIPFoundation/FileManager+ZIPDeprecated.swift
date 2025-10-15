@@ -17,7 +17,7 @@ public extension FileManager {
     }
 
     @available(*, deprecated,
-                message: "Please use `symlinksValidWithin` to restrict symlinks")
+                renamed: "unzipItem(at:to:skipCRC32:symlinksValidWithin:progress:pathEncoding:)")
     func unzipItem(at sourceURL: URL, to destinationURL: URL,
                    skipCRC32: Bool = false, allowUncontainedSymlinks: Bool,
                    progress: Progress? = nil, pathEncoding: String.Encoding? = nil) throws {
